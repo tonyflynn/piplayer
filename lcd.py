@@ -73,6 +73,9 @@ def signal_handler(signal, frame):
   sys.exit(0)
 
 def main():
+  # Add the SIGINT handler
+  signal.signal(signal.SIGINT, signal_handler)
+
   # Main program block
   GPIO.setwarnings(False)      # supress warning messages
   GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
@@ -93,20 +96,26 @@ def main():
   GPIO.output(LED_ON, True)
   time.sleep(1)
 
+  station = ""
+  song = ""
+
   while True:
     # Send command output to the LCD
     cmd = "mpc|head -n1"
     mpcinfo = run_cmd(cmd)
     channeldata = mpcinfo.split(": ")
+    if (channeldata[0].strip == station):
+      samesong = True
+    else:
+      samesong = False
     station = channeldata[0].strip()
     song = channeldata[1].strip()
-    print station
-    print song
-
+        
     lcd_byte(LCD_LINE_1, LCD_CMD)
     lcd_string(station, 1)
     lcd_byte(LCD_LINE_2, LCD_CMD)
-    lcd_string(song, 1)
+    if (samesong == False):
+      lcd_string(song, 1)
     time.sleep(1)
   
     # if either of the lines are longer than the LCD can handle
