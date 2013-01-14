@@ -1,0 +1,16 @@
+This is the readme file for my piplayer scripts
+
+I'm developing this set of scripts to run my Raspberry Pi music player.
+
+Code has come from a number of sources, all of which will be listed here
+once I'm done.
+
+- Stream music through the Pi using mpc/mpd
+- Update an LCD display with the channel and song
+- Allow for hardware inputs so it can be housed in a case
+
+and much more...
+
+If you have any questions or comments, let me know at tonyflynn@gmail.com.
+
+TF
