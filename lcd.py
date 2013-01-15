@@ -104,7 +104,7 @@ def main():
     cmd = "mpc|head -n1"
     mpcinfo = run_cmd(cmd)
     channeldata = mpcinfo.split(": ")
-    if (channeldata[0].strip == station):
+    if (channeldata[1].strip == station):
       samesong = True
     else:
       samesong = False
@@ -142,14 +142,14 @@ def main():
     time.sleep(3)
 
     # Blank display
-    lcd_byte(LCD_LINE_1, LCD_CMD)
-    lcd_string("",3)
-    lcd_byte(LCD_LINE_2, LCD_CMD)
-    lcd_string("",3)
-    lcd_byte(LCD_LINE_3, LCD_CMD)
-    lcd_string("",2)
-    lcd_byte(LCD_LINE_4, LCD_CMD)
-    lcd_string("",2)
+#    lcd_byte(LCD_LINE_1, LCD_CMD)
+#    lcd_string("",3)
+#    lcd_byte(LCD_LINE_2, LCD_CMD)
+#    lcd_string("",3)
+#    lcd_byte(LCD_LINE_3, LCD_CMD)
+#    lcd_string("",2)
+#    lcd_byte(LCD_LINE_4, LCD_CMD)
+#    lcd_string("",2)
 
   # Send some centred test
 #  lcd_byte(LCD_LINE_1, LCD_CMD)
