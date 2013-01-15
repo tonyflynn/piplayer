@@ -27,8 +27,8 @@
 #import
 import RPi.GPIO as GPIO
 import time
-from subprocess import *
-import signal
+#from subprocess import *
+#import signal
 import sys
 
 # Define GPIO to LCD mapping
@@ -54,22 +54,7 @@ LCD_LINE_4 = 0xD4 # LCD RAM address for the 4th line
 E_PULSE = 0.00005
 E_DELAY = 0.00005
 
-# def signal_handler(signal, frame):
-  # # handle interrupt
-  # print("Exiting...")
-  # # Blank display
-  # lcd_byte(LCD_LINE_1, LCD_CMD)
-  # lcd_string("",3)
-  # lcd_byte(LCD_LINE_2, LCD_CMD)
-  # lcd_string("",3)
-  # lcd_byte(LCD_LINE_3, LCD_CMD)
-  # lcd_string("",2)
-  # lcd_byte(LCD_LINE_4, LCD_CMD)
-  # lcd_string("",2)
-  # # Exit program
-  # sys.exit(0)
-
-  def lcd_setup();
+def lcd_setup();
   GPIO.setwarnings(False)      # supress warning messages
   GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
   GPIO.setup(LCD_E, GPIO.OUT)  # E
@@ -79,121 +64,7 @@ E_DELAY = 0.00005
   GPIO.setup(LCD_D6, GPIO.OUT) # DB6
   GPIO.setup(LCD_D7, GPIO.OUT) # DB7
   GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
-  
-  lcd_init()
-  
-  # Toggle backlight off-on
-  GPIO.output(LED_ON, False)
-  time.sleep(1)
-  GPIO.output(LED_ON, True)
-  time.sleep(1)
-  
-#def oldmain():
-  # Add the SIGINT handler
-  #signal.signal(signal.SIGINT, signal_handler)
-
-  # # Main program block
-  # GPIO.setwarnings(False)      # supress warning messages
-  # GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
-  # GPIO.setup(LCD_E, GPIO.OUT)  # E
-  # GPIO.setup(LCD_RS, GPIO.OUT) # RS
-  # GPIO.setup(LCD_D4, GPIO.OUT) # DB4
-  # GPIO.setup(LCD_D5, GPIO.OUT) # DB5
-  # GPIO.setup(LCD_D6, GPIO.OUT) # DB6
-  # GPIO.setup(LCD_D7, GPIO.OUT) # DB7
-  # GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
-
-  # Initialise display
-  #lcd_init()
-
-  # # Toggle backlight off-on
-  # GPIO.output(LED_ON, False)
-  # time.sleep(1)
-  # GPIO.output(LED_ON, True)
-  # time.sleep(1)
-
-  #station = ""
-  #song = ""
-
-  # while True:
-    # # Send command output to the LCD
-    # cmd = "mpc|head -n1"
-    # mpcinfo = run_cmd(cmd)
-    # channeldata = mpcinfo.split(": ")
-    # if (channeldata[0].strip == station):
-      # samesong = True
-    # else:
-      # samesong = False
-    # station = channeldata[0].strip()
-    # song = channeldata[1].strip()
-        
-    # lcd_byte(LCD_LINE_1, LCD_CMD)
-    # lcd_string(station, 1)
-    # lcd_byte(LCD_LINE_2, LCD_CMD)
-    # if (samesong == False):
-      # lcd_string(song, 1)
-    # time.sleep(1)
-  
-    # # if either of the lines are longer than the LCD can handle
-    # if (len(station) > 20) or (len(song)) > 20:
-      # # work out which line is longer and work from that
-      # if len(station) > len(song):
-        # maxline = len(station)
-      # else:
-        # maxline = len(song)
-  
-      # # loop through the lines to scroll the text
-      # # and stop a line if it hits the end
-      # for i in range (0, maxline - 19):
-        # lcdtext1 = station[i:(i + 20)]
-        # lcdtext2 = song[i:(i + 20)]
-        # # if we're at the end of the string, no more scrolling
-        # if (i + 19) < len(station):
-          # lcd_byte(LCD_LINE_1, LCD_CMD)
-          # lcd_string(lcdtext1, 1)
-        # if (i + 19) < len(song):
-          # lcd_byte(LCD_LINE_2, LCD_CMD)
-          # lcd_string(lcdtext2, 1)
-        # time.sleep(0.3)
-    # time.sleep(3)
-
-    #lcd_clear()
-
-  # Send some centred test
-#  lcd_byte(LCD_LINE_1, LCD_CMD)
-#  lcd_string("--------------------",2) 
-#  lcd_byte(LCD_LINE_2, LCD_CMD)
-#  lcd_string("Rasbperry Pi",2)
-#  lcd_byte(LCD_LINE_3, LCD_CMD)
-#  lcd_string("Model B",2)
-#  lcd_byte(LCD_LINE_4, LCD_CMD)
-#  lcd_string("--------------------",2)    
-
-#  time.sleep(3) # 3 second delay 
-
-#  lcd_byte(LCD_LINE_1, LCD_CMD)
-#  lcd_string("Raspberrypi-spy",3)
-#  lcd_byte(LCD_LINE_2, LCD_CMD)
-#  lcd_string(".co.uk",3)  
-#  lcd_byte(LCD_LINE_3, LCD_CMD)
-#  lcd_string("",2) 
-#  lcd_byte(LCD_LINE_4, LCD_CMD)
-#  lcd_string("20x4 LCD Module Test",2)   
-
-#  time.sleep(20) # 20 second delay 
-
-#  time.sleep(10)
-
-#  time.sleep(3) # 3 second delay  
-
-  # Turn off backlight
-  #GPIO.output(LED_ON, False)
-
-# def run_cmd(cmd):
-	# p = Popen(cmd, shell=True, stdout=PIPE)
-	# output = p.communicate()[0]
-	# return output
-
+ 
 def lcd_init():
   # Initialise display
   lcd_byte(0x33,LCD_CMD)
