@@ -98,46 +98,55 @@ def main():
 
   station = ""
   song = ""
+  artist = ""
 
   while True:
     # Send command output to the LCD
-    cmd = "mpc|head -n1"
+    #cmd = "mpc|head -n1"
+    cmd = "mpc current"
     mpcinfo = run_cmd(cmd)
     channeldata = mpcinfo.split(": ")
-    if (channeldata[1].strip == station):
+    songdata = channeldata[1].split(" - ")
+    if (channeldata[1].strip == song):
       samesong = True
     else:
       samesong = False
     station = channeldata[0].strip()
-    song = channeldata[1].strip()
-        
+    song = songdata[1].strip()
+    artist = songdata[0].strip()     
     lcd_byte(LCD_LINE_1, LCD_CMD)
     lcd_string(station, 1)
-    lcd_byte(LCD_LINE_2, LCD_CMD)
-    if (samesong == False):
-      lcd_string(song, 1)
+    #lcd_byte(LCD_LINE_2, LCD_CMD)
+    #if (samesong == False):
+    #lcd_string(song, 1)
+    lcd_byte(LCD_LINE_3, LCD_CMD)
+    lcd_string(artist, 1)
+    lcd_byte(LCD_LINE_4, LCD_CMD)
+    lcd_string(song, 1)
+
     time.sleep(1)
   
     # if either of the lines are longer than the LCD can handle
-    if (len(station) > 20) or (len(song)) > 20:
+    if (len(station) > 20) or (len(song) or len(artist)) > 20:
       # work out which line is longer and work from that
-      if len(station) > len(song):
-        maxline = len(station)
-      else:
-        maxline = len(song)
-  
+      maxline = max(len(station), len(song), len(artist))
+        
       # loop through the lines to scroll the text
       # and stop a line if it hits the end
       for i in range (0, maxline - 19):
         lcdtext1 = station[i:(i + 20)]
-        lcdtext2 = song[i:(i + 20)]
+        lcdtext2 = artist[i:(i + 20)]
+        lcdtext3 = song[i:(i + 20)]
         # if we're at the end of the string, no more scrolling
         if (i + 19) < len(station):
           lcd_byte(LCD_LINE_1, LCD_CMD)
           lcd_string(lcdtext1, 1)
-        if (i + 19) < len(song):
-          lcd_byte(LCD_LINE_2, LCD_CMD)
+        if (i + 19) < len(artist):
+          lcd_byte(LCD_LINE_3, LCD_CMD)
           lcd_string(lcdtext2, 1)
+        if (i + 19) < len(song):
+          lcd_byte(LCD_LINE_4, LCD_CMD)
+          lcd_string(lcdtext3, 1)
         time.sleep(0.3)
     time.sleep(3)
 
