@@ -103,52 +103,71 @@ def main():
   while True:
     # Send command output to the LCD
     #cmd = "mpc|head -n1"
-    cmd = "mpc current"
+    cmd = "mpc current" # show the current station and song
     mpcinfo = run_cmd(cmd)
-    channeldata = mpcinfo.split(": ")
-    songdata = channeldata[1].split(" - ")
-    if (channeldata[1].strip == song):
-      samesong = True
-    else:
-      samesong = False
-    station = channeldata[0].strip()
-    song = songdata[1].strip()
-    artist = songdata[0].strip()     
-    lcd_byte(LCD_LINE_1, LCD_CMD)
-    lcd_string(station, 1)
+    mpcinfo = mpcinfo.strip()
+#    print mpcinfo
+    if (mpcinfo.count(": ") != 0):
+      channeldata = mpcinfo.split(": ")
+    
+#    for member in channeldata:
+#      print member
+      if (channeldata[1].count(" - ") != 0):
+        songdata = channeldata[1].split(" - ", )
+    #for member in songdata:
+    #  print member
+    #if (channeldata[1].strip == song):
+    #  samesong = True
+    #else:
+    #  samesong = False
+      #if (len(songdata) != 0):
+        station = channeldata[0].strip()
+        song = songdata[1].strip()
+        artist = songdata[0].strip()     
+        lcd_byte(LCD_LINE_1, LCD_CMD)
+        lcd_string(station, 1)
     #lcd_byte(LCD_LINE_2, LCD_CMD)
     #if (samesong == False):
-    #lcd_string(song, 1)
-    lcd_byte(LCD_LINE_3, LCD_CMD)
-    lcd_string(artist, 1)
-    lcd_byte(LCD_LINE_4, LCD_CMD)
-    lcd_string(song, 1)
+    #lcd_string(song, 1) 
+        lcd_byte(LCD_LINE_3, LCD_CMD)
+        lcd_string(song, 1)
+        lcd_byte(LCD_LINE_4, LCD_CMD)
+        lcd_string(artist, 1)
 
-    time.sleep(1)
+        time.sleep(1)
   
     # if either of the lines are longer than the LCD can handle
-    if (len(station) > 20) or (len(song) or len(artist)) > 20:
+        if (len(station) > 20) or (len(song) or len(artist)) > 20:
       # work out which line is longer and work from that
-      maxline = max(len(station), len(song), len(artist))
+          maxline = max(len(station), len(song), len(artist))
         
       # loop through the lines to scroll the text
       # and stop a line if it hits the end
-      for i in range (0, maxline - 19):
-        lcdtext1 = station[i:(i + 20)]
-        lcdtext2 = artist[i:(i + 20)]
-        lcdtext3 = song[i:(i + 20)]
+          for i in range (0, maxline - 19):
+            lcdtext1 = station[i:(i + 20)]
+            lcdtext2 = song[i:(i + 20)]
+            lcdtext3 = artist[i:(i + 20)]
         # if we're at the end of the string, no more scrolling
-        if (i + 19) < len(station):
-          lcd_byte(LCD_LINE_1, LCD_CMD)
-          lcd_string(lcdtext1, 1)
-        if (i + 19) < len(artist):
-          lcd_byte(LCD_LINE_3, LCD_CMD)
-          lcd_string(lcdtext2, 1)
-        if (i + 19) < len(song):
-          lcd_byte(LCD_LINE_4, LCD_CMD)
-          lcd_string(lcdtext3, 1)
-        time.sleep(0.3)
-    time.sleep(3)
+            if (i + 19) < len(station):
+              lcd_byte(LCD_LINE_1, LCD_CMD)
+              lcd_string(lcdtext1, 1)
+            if (i + 19) < len(song):
+              lcd_byte(LCD_LINE_3, LCD_CMD)
+              lcd_string(lcdtext2, 1)
+            if (i + 19) < len(artist):
+              lcd_byte(LCD_LINE_4, LCD_CMD)
+              lcd_string(lcdtext3, 1)
+            time.sleep(0.3)
+      else:
+        lcd_byte(LCD_LINE_1, LCD_CMD)
+        lcd_string(station, 1)
+        lcd_byte(LCD_LINE_2, LCD_CMD)
+        lcd_string("",3)
+        lcd_byte(LCD_LINE_3, LCD_CMD)
+        lcd_string("",2)
+        lcd_byte(LCD_LINE_4, LCD_CMD)
+        lcd_string("",2)
+      time.sleep(3)
 
     # Blank display
 #    lcd_byte(LCD_LINE_1, LCD_CMD)
