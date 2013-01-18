@@ -1,13 +1,16 @@
-This is the readme file for my piplayer scripts
+*** ALPHA ***
 
-I'm developing this set of scripts to run my Raspberry Pi music player.
+This is the readme file for my Raspberry Pi music player scripts - it's really just a collection of
+scripts at this stage. They'll all be pulled together into something which
+can be run headless inside a case.
 
-Code has come from a number of sources, all of which will be listed here
+The code has been adapted from a number of sources, all of which will be listed here
 once I'm done.
 
-- Stream music through the Pi using mpc/mpd
+- Stream music through the Pi using mpc/mpd or Pandora
 - Update an LCD display with the channel and song
 - Allow for hardware inputs so it can be housed in a case
+-- Play/Pause, Prev/Next, Like/Not (Pandora)
 
 and much more...
 
