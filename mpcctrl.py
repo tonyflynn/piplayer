@@ -4,9 +4,9 @@ import os
 import RPi.GPIO as GPIO 
 
 GPIO.setmode(GPIO.BCM) 
-GPIO.setup(23, GPIO.IN)
+GPIO.setup(15, GPIO.IN)
 
 while True:
-	if ( GPIO.input(23) != False ):
-		os.system('mpc stop')
-	sleep(0.1);
+	if ( GPIO.input(15) == False ): # button pressed
+		os.system('mpc toggle')
+		sleep(0.4);
