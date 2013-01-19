@@ -41,7 +41,7 @@ LCD_D4 = 25
 LCD_D5 = 24
 LCD_D6 = 23
 LCD_D7 = 18
-LED_ON = 15
+LED_ON = 14
 
 # Define some device constants
 LCD_WIDTH = 20    # Maximum characters per line
@@ -56,17 +56,6 @@ LCD_LINE_4 = 0xD4 # LCD RAM address for the 4th line
 # Timing constants
 E_PULSE = 0.00005
 E_DELAY = 0.00005
-
-def signal_handler(signal, frame):
-  # handle interrupt
-  print("Exiting...")
-  lcd_clear()
-  # Exit program
-  sys.exit(0)
-
-def main():
-  # Add the SIGINT handler
-  signal.signal(signal.SIGINT, signal_handler)
 
 def run_cmd(cmd):
 	p = Popen(cmd, shell=True, stdout=PIPE)
