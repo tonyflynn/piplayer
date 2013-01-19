@@ -61,15 +61,6 @@ def signal_handler(signal, frame):
   # handle interrupt
   print("Exiting...")
   lcd_clear()
-  # Blank display
-#  lcd_byte(LCD_LINE_1, LCD_CMD)
-#  lcd_string("",3)
-#  lcd_byte(LCD_LINE_2, LCD_CMD)
-#  lcd_string("",3)
-#  lcd_byte(LCD_LINE_3, LCD_CMD)
-#  lcd_string("",2)
-#  lcd_byte(LCD_LINE_4, LCD_CMD)
-#  lcd_string("",2)
   # Exit program
   sys.exit(0)
 
@@ -77,111 +68,12 @@ def main():
   # Add the SIGINT handler
   signal.signal(signal.SIGINT, signal_handler)
 
-  # Main program block
-  GPIO.setwarnings(False)      # supress warning messages
-  GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
-  GPIO.setup(LCD_E, GPIO.OUT)  # E
-  GPIO.setup(LCD_RS, GPIO.OUT) # RS
-  GPIO.setup(LCD_D4, GPIO.OUT) # DB4
-  GPIO.setup(LCD_D5, GPIO.OUT) # DB5
-  GPIO.setup(LCD_D6, GPIO.OUT) # DB6
-  GPIO.setup(LCD_D7, GPIO.OUT) # DB7
-  GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
-
-  # Initialise display
-  lcd_init()
-
-  # Toggle backlight off-on
-  GPIO.output(LED_ON, False)
-  time.sleep(1)
-  GPIO.output(LED_ON, True)
-  time.sleep(1)
-
-  station = ""
-  song = ""
-  artist = ""
-
-  while True:
-    # Send command output to the LCD
-    #cmd = "mpc|head -n1"
-    cmd = "mpc current" # show the current station and song
-    mpcinfo = run_cmd(cmd)
-    mpcinfo = mpcinfo.strip()
-#    print mpcinfo
-    if (mpcinfo.count(": ") != 0):
-      channeldata = mpcinfo.split(": ")
-    
-#    for member in channeldata:
-#      print member
-      if (channeldata[1].count(" - ") != 0):
-        songdata = channeldata[1].split(" - ", )
-    #for member in songdata:
-    #  print member
-    #if (channeldata[1].strip == song):
-    #  samesong = True
-    #else:
-    #  samesong = False
-      #if (len(songdata) != 0):
-        station = channeldata[0].strip()
-        song = songdata[1].strip()
-        artist = songdata[0].strip()     
-        lcd_byte(LCD_LINE_1, LCD_CMD)
-        lcd_string(station, 1)
-    #lcd_byte(LCD_LINE_2, LCD_CMD)
-    #if (samesong == False):
-    #lcd_string(song, 1) 
-        lcd_byte(LCD_LINE_3, LCD_CMD)
-        lcd_string(song, 1)
-        lcd_byte(LCD_LINE_4, LCD_CMD)
-        lcd_string(artist, 1)
-
-        time.sleep(1)
-  
-    # if either of the lines are longer than the LCD can handle
-        if (len(station) > 20) or (len(song) or len(artist)) > 20:
-      # work out which line is longer and work from that
-          maxline = max(len(station), len(song), len(artist))
-        
-      # loop through the lines to scroll the text
-      # and stop a line if it hits the end
-          for i in range (0, maxline - 19):
-            lcdtext1 = station[i:(i + 20)]
-            lcdtext2 = song[i:(i + 20)]
-            lcdtext3 = artist[i:(i + 20)]
-        # if we're at the end of the string, no more scrolling
-            if (i + 19) < len(station):
-              lcd_byte(LCD_LINE_1, LCD_CMD)
-              lcd_string(lcdtext1, 1)
-            if (i + 19) < len(song):
-              lcd_byte(LCD_LINE_3, LCD_CMD)
-              lcd_string(lcdtext2, 1)
-            if (i + 19) < len(artist):
-              lcd_byte(LCD_LINE_4, LCD_CMD)
-              lcd_string(lcdtext3, 1)
-            time.sleep(0.3)
-      else:
-        lcd_byte(LCD_LINE_1, LCD_CMD)
-        lcd_string(station, 1)
-        lcd_byte(LCD_LINE_2, LCD_CMD)
-        lcd_string("",3)
-        lcd_byte(LCD_LINE_3, LCD_CMD)
-        lcd_string("",2)
-        lcd_byte(LCD_LINE_4, LCD_CMD)
-        lcd_string("",2)
-      time.sleep(3)
-
-
-  lcd_clear()
-
-  # Turn off backlight
-  GPIO.output(LED_ON, False)
-
 def run_cmd(cmd):
 	p = Popen(cmd, shell=True, stdout=PIPE)
 	output = p.communicate()[0]
 	return output
 
-def lcd_setup():
+def lcd_init2():
   GPIO.setwarnings(False)      # supress warning messages
   GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
   GPIO.setup(LCD_E, GPIO.OUT)  # E
@@ -191,26 +83,20 @@ def lcd_setup():
   GPIO.setup(LCD_D6, GPIO.OUT) # DB6
   GPIO.setup(LCD_D7, GPIO.OUT) # DB7
   GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
-
-def lcd_init():
   # Initialise display
   lcd_byte(0x33,LCD_CMD)
   lcd_byte(0x32,LCD_CMD)
   lcd_byte(0x28,LCD_CMD)
-  lcd_byte(0x0C,LCD_CMD)  
+  lcd_byte(0x0C,LCD_CMD)
   lcd_byte(0x06,LCD_CMD)
-  lcd_byte(0x01,LCD_CMD)  
+  lcd_byte(0x01,LCD_CMD)
 
 def lcd_clear():
   # Blank display
-  lcd_byte(LCD_LINE_1, LCD_CMD)
-  lcd_string("",3)
-  lcd_byte(LCD_LINE_2, LCD_CMD)
-  lcd_string("",3)
-  lcd_byte(LCD_LINE_3, LCD_CMD)
-  lcd_string("",2)
-  lcd_byte(LCD_LINE_4, LCD_CMD)
-  lcd_string("",2)
+  lcd_print(1, "", 1)
+  lcd_print(2, "", 1)
+  lcd_print(3, "", 1)
+  lcd_print(4, "", 1)
 
 def lcd_backlight(blstatus):
  # Toggle backlight off-on
@@ -255,14 +141,13 @@ def lcd_scroll(line1, line2, line3, line4):
         lcd_print(3, lcdtext3, 1)
       if (i + 19) < len(line4):
         lcd_print(4, lcdtext4, 1)
-
-      time.sleep(0.3)
+      time.sleep(0.3) # scroll speed
   else:
     lcd_print(1, line1, 1)
     lcd_print(2, line2, 1)
     lcd_print(3, line3, 1)
     lcd_print(4, line4, 1)
-    time.sleep(3)
+  time.sleep(3) # wait before starting the scroll again
 
 def lcd_string(message,style):
   # Send string to display
@@ -330,6 +215,21 @@ def lcd_byte(bits, mode):
   GPIO.output(LCD_E, False)  
   time.sleep(E_DELAY)   
 
-if __name__ == '__main__':
-  main()
+def lcd_init():
+  GPIO.setwarnings(False)      # supress warning messages
+  GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
+  GPIO.setup(LCD_E, GPIO.OUT)  # E
+  GPIO.setup(LCD_RS, GPIO.OUT) # RS
+  GPIO.setup(LCD_D4, GPIO.OUT) # DB4
+  GPIO.setup(LCD_D5, GPIO.OUT) # DB5
+  GPIO.setup(LCD_D6, GPIO.OUT) # DB6
+  GPIO.setup(LCD_D7, GPIO.OUT) # DB7
+  GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
+  # Initialise display
+  lcd_byte(0x33,LCD_CMD)
+  lcd_byte(0x32,LCD_CMD)
+  lcd_byte(0x28,LCD_CMD)
+  lcd_byte(0x0C,LCD_CMD)
+  lcd_byte(0x06,LCD_CMD)
+  lcd_byte(0x01,LCD_CMD)
 
