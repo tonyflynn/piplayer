@@ -60,15 +60,16 @@ E_DELAY = 0.00005
 def signal_handler(signal, frame):
   # handle interrupt
   print("Exiting...")
+  lcd_clear()
   # Blank display
-  lcd_byte(LCD_LINE_1, LCD_CMD)
-  lcd_string("",3)
-  lcd_byte(LCD_LINE_2, LCD_CMD)
-  lcd_string("",3)
-  lcd_byte(LCD_LINE_3, LCD_CMD)
-  lcd_string("",2)
-  lcd_byte(LCD_LINE_4, LCD_CMD)
-  lcd_string("",2)
+#  lcd_byte(LCD_LINE_1, LCD_CMD)
+#  lcd_string("",3)
+#  lcd_byte(LCD_LINE_2, LCD_CMD)
+#  lcd_string("",3)
+#  lcd_byte(LCD_LINE_3, LCD_CMD)
+#  lcd_string("",2)
+#  lcd_byte(LCD_LINE_4, LCD_CMD)
+#  lcd_string("",2)
   # Exit program
   sys.exit(0)
 
@@ -169,52 +170,8 @@ def main():
         lcd_string("",2)
       time.sleep(3)
 
-    # Blank display
-#    lcd_byte(LCD_LINE_1, LCD_CMD)
-#    lcd_string("",3)
-#    lcd_byte(LCD_LINE_2, LCD_CMD)
-#    lcd_string("",3)
-#    lcd_byte(LCD_LINE_3, LCD_CMD)
-#    lcd_string("",2)
-#    lcd_byte(LCD_LINE_4, LCD_CMD)
-#    lcd_string("",2)
 
-  # Send some centred test
-#  lcd_byte(LCD_LINE_1, LCD_CMD)
-#  lcd_string("--------------------",2) 
-#  lcd_byte(LCD_LINE_2, LCD_CMD)
-#  lcd_string("Rasbperry Pi",2)
-#  lcd_byte(LCD_LINE_3, LCD_CMD)
-#  lcd_string("Model B",2)
-#  lcd_byte(LCD_LINE_4, LCD_CMD)
-#  lcd_string("--------------------",2)    
-
-#  time.sleep(3) # 3 second delay 
-
-#  lcd_byte(LCD_LINE_1, LCD_CMD)
-#  lcd_string("Raspberrypi-spy",3)
-#  lcd_byte(LCD_LINE_2, LCD_CMD)
-#  lcd_string(".co.uk",3)  
-#  lcd_byte(LCD_LINE_3, LCD_CMD)
-#  lcd_string("",2) 
-#  lcd_byte(LCD_LINE_4, LCD_CMD)
-#  lcd_string("20x4 LCD Module Test",2)   
-
-#  time.sleep(20) # 20 second delay 
-
-#  time.sleep(10)
-
-  # Blank display
-  lcd_byte(LCD_LINE_1, LCD_CMD)
-  lcd_string("",3)
-  lcd_byte(LCD_LINE_2, LCD_CMD)
-  lcd_string("",3)  
-  lcd_byte(LCD_LINE_3, LCD_CMD)
-  lcd_string("",2) 
-  lcd_byte(LCD_LINE_4, LCD_CMD)
-  lcd_string("",2)    
-
-#  time.sleep(3) # 3 second delay  
+  lcd_clear()
 
   # Turn off backlight
   GPIO.output(LED_ON, False)
@@ -224,6 +181,17 @@ def run_cmd(cmd):
 	output = p.communicate()[0]
 	return output
 
+def lcd_setup():
+  GPIO.setwarnings(False)      # supress warning messages
+  GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
+  GPIO.setup(LCD_E, GPIO.OUT)  # E
+  GPIO.setup(LCD_RS, GPIO.OUT) # RS
+  GPIO.setup(LCD_D4, GPIO.OUT) # DB4
+  GPIO.setup(LCD_D5, GPIO.OUT) # DB5
+  GPIO.setup(LCD_D6, GPIO.OUT) # DB6
+  GPIO.setup(LCD_D7, GPIO.OUT) # DB7
+  GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
+
 def lcd_init():
   # Initialise display
   lcd_byte(0x33,LCD_CMD)
@@ -232,6 +200,69 @@ def lcd_init():
   lcd_byte(0x0C,LCD_CMD)  
   lcd_byte(0x06,LCD_CMD)
   lcd_byte(0x01,LCD_CMD)  
+
+def lcd_clear():
+  # Blank display
+  lcd_byte(LCD_LINE_1, LCD_CMD)
+  lcd_string("",3)
+  lcd_byte(LCD_LINE_2, LCD_CMD)
+  lcd_string("",3)
+  lcd_byte(LCD_LINE_3, LCD_CMD)
+  lcd_string("",2)
+  lcd_byte(LCD_LINE_4, LCD_CMD)
+  lcd_string("",2)
+
+def lcd_backlight(blstatus):
+ # Toggle backlight off-on
+  if (blstatus == 0):
+    GPIO.output(LED_ON, False)
+  elif (blstatus == 1):
+    GPIO.output(LED_ON, True)
+  
+def lcd_print(lineno, lcdtext, formatstr):
+  # usage: lcd_print(line[1-4], text, format[1-3]
+  lcdbytestr = eval("LCD_LINE_" + str(lineno))
+  lcd_byte(lcdbytestr, LCD_CMD)
+  lcd_string(lcdtext, formatstr)
+
+def lcd_scroll(line1, line2, line3, line4):
+# auto scroll the text on each LCD line (4 lines)
+
+  lcd_print(1, line1, 1)
+  lcd_print(2, line2, 1)
+  lcd_print(3, line3, 1)
+  lcd_print(4, line4, 1)
+
+  time.sleep(1)
+
+  # if any of the lines are longer than the LCD can handle, scroll
+  maxline = max(len(line1), len(line2), len(line3), len(line4))
+  if (maxline > 20):
+    # loop through the lines to scroll the text
+    # and stop a line if it hits the end
+    for i in range (0, maxline - 19):
+      lcdtext1 = line1[i:(i + 20)]
+      lcdtext2 = line2[i:(i + 20)]
+      lcdtext3 = line3[i:(i + 20)]
+      lcdtext4 = line4[i:(i + 20)]
+      
+      # if we're at the end of the string, no more scrolling
+      if (i + 19) < len(line1):
+        lcd_print(1, lcdtext1, 1)
+      if (i + 19) < len(line2):
+        lcd_print(2, lcdtext2, 1)
+      if (i + 19) < len(line3):
+        lcd_print(3, lcdtext3, 1)
+      if (i + 19) < len(line4):
+        lcd_print(4, lcdtext4, 1)
+
+      time.sleep(0.3)
+  else:
+    lcd_print(1, line1, 1)
+    lcd_print(2, line2, 1)
+    lcd_print(3, line3, 1)
+    lcd_print(4, line4, 1)
+    time.sleep(3)
 
 def lcd_string(message,style):
   # Send string to display
