@@ -20,6 +20,7 @@ def main():
   source = "mpc"
   # Start mpc
   os.system("mpc play")
+  os.system("mpc volume 100") # Set volume to flat out
 
   # Start the LCD script
   subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", source])
@@ -28,10 +29,9 @@ def main():
   ### BEGIN THE LOOP ###
   while exitPlayer != True:
     if (GPIO.input(15) == False): # Button 1 pressed
-      os.system("mpc toggle")
-      #print GPIO.input(15)
+      if source == "mpc": os.system("mpc toggle") # play/pause
       sleep(0.4)
-
+  ### END OF LOOP ###
 #  sleep(10)
   kill_procs()
 
