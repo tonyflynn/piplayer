@@ -1,11 +1,8 @@
 *** ALPHA ***
 
-This is the readme file for my Raspberry Pi music player scripts - it's really just a collection of
-scripts at this stage. They'll all be pulled together into something which
-can be run headless inside a case.
-
-The code has been adapted from a number of sources, all of which will be listed here
-once I'm done.
+This is the readme file for my Raspberry Pi music player scripts.
+It's really just a collection of scripts at this stage. 
+They'll all be pulled together into something which can be run headless inside a case.
 
 - Stream music through the Pi using mpc/mpd or Pandora
 - Update an LCD display with the channel and song
@@ -13,6 +10,16 @@ once I'm done.
 -- Play/Pause, Prev/Next, Like/Not (Pandora)
 
 and much more...
+
+I've found pieces of code and circuits in many places to help put this together,
+but the ones that helped the most are here:
+
+- LCD script: Matt Hawkins HD44780 Test script - http://www.raspberrypi-spy.co.uk/
+- Adafruit (of course) for the wiring and plenty of resources on Raspberry Pi
+- Pandora's Box Internet Radio Player - plenty of help with pianobar: 
+--http://www.instructables.com/id/Pandoras-Box-An-Internet-Radio-player-made-with/
+
+
 
 If you have any questions or comments, let me know at tonyflynn@gmail.com.
 
