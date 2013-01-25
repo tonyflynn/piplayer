@@ -21,18 +21,20 @@ def main():
 #lcd_scroll(line1, line2, line3, line4)
 
   # Show the system info first
-  ipinfo = run_cmd("ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1")
-  dayinfo = run_cmd("date +'%A'")
-  dateinfo = run_cmd("date +'%d %b %Y'")
-  timeinfo = run_cmd("date +'%I:%M %p'")
-  lcd_scroll(dayinfo.strip(), dateinfo.strip(), timeinfo.strip(), ipinfo.strip())
-  sleep(5)
+  #ipinfo = run_cmd("ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1")
+  #dayinfo = run_cmd("date +'%A'")
+  #dateinfo = run_cmd("date +'%d %b %Y'")
+  #timeinfo = run_cmd("date +'%I:%M %p'")
+  #lcd_scroll(dayinfo.strip(), dateinfo.strip(), timeinfo.strip(), ipinfo.strip())
+  #sleep(5)
 
   while True:
     if player == "mpc":
       songdata = get_list_mpc("mpc Stream")
     elif player == "pandora":
       songdata = get_list_pandora("Pandora")
+    else:
+      sys.exit(0)
 
     #Display scrolling data on the L:CD
     lcd_scroll(songdata[3], songdata[0], songdata[2], songdata[1])
@@ -77,6 +79,15 @@ def get_list_pandora(label):
 	artist = pandorainfo[2].strip()
 	datalist = [station, song, artist, label]
 	return datalist
+
+def listsysinfo(infolist):
+  # Show the system info
+  ipinfo = run_cmd("ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1")
+  dayinfo = run_cmd("date +'%A'")
+  dateinfo = run_cmd("date +'%d %b %Y'")
+  timeinfo = run_cmd("date +'%I:%M %p'")
+  infolist = [dayinfo.strip(), dateinfo.strip(), timeinfo.strip(), ipinfo.strip()]
+  return infolist
 
 def signal_handler_lcd(signal, frame):
   # handle interrupt
