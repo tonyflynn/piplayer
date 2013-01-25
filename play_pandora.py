@@ -17,7 +17,7 @@ def main():
   signal.signal(signal.SIGINT, signal_handler_main)
 
   print "Starting Pandora..."
-  pp = subprocess.Popen(["sudo", "-u", "pi", "pianobar"])
+  pp = subprocess.Popen(["pianobar"])
   #os.system("pianobar")
   # Start the LCD script
   lp = subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", "pandora"])
@@ -27,7 +27,7 @@ def main():
   while exitPlayer == False:
     if (GPIO.input(15) == False): # Button 1 pressed
       # Stop Pandora
-      os.system("echo 'q' >> /home/pi/.config/pianobar/ctl")
+      os.system("echo 'q' >> /root/.config/pianobar/ctl")
       exitPlayer = True
   ### END OF LOOP ###
 #  sleep(10)
@@ -39,6 +39,8 @@ def signal_handler_main(signal, frame):
   # Kill subprocesses
   kill_procs()
   #lp.send_signal(signal.SIGINT)
+#  os.system("sudo pkill -2 lcdctrl.py")
+
   # Exit
   sys.exit(0)
 
@@ -47,7 +49,7 @@ def kill_procs():
   # send SIGINT so they close happily
   # have signal handlers on anything you kill here...
   os.system("sudo pkill -2 lcdctrl.py")
-  #lp.send_signal(signal.SIGINT)
+  #procid.send_signal(signal.SIGINT)
 
 if __name__ == "__main__":
     main()

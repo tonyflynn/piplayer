@@ -15,22 +15,38 @@ def main():
   # Add the SIGINT handler
   signal.signal(signal.SIGINT, signal_handler_main)
 
-  print "Starting the player in the background..."
-  print "Defaulting to mpc..."
-  source = "mpc"
-  # Start mpc
-  os.system("mpc play")
-  os.system("mpc volume 100") # Set volume to flat out
+  print "Defaulting to Pandora..."
+  source = "pandora"
 
-  # Start the LCD script
-  subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", source])
+  # Start the player script
+  lp = subprocess.Popen(["play_pandora.py", source])
 
   exitPlayer = False
   ### BEGIN THE LOOP ###
-  while exitPlayer != True:
+  while exitPlayer == False:
     if (GPIO.input(15) == False): # Button 1 pressed
-      if source == "mpc": os.system("mpc toggle") # play/pause
-      sleep(0.4)
+      if source == "mpc": 
+      # Change source
+        source = "pandora"
+        # Close the LCD updater
+        lp.send_signal(signal.SIGINT)
+        os.system("mpc stop")
+        sleep(0.5)
+        # start pianobar
+        os.system("sudo -u pi pianobar")
+        lp = subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", source])
+      elif source == "pandora":
+        # Change source
+        source = "mpc"
+        # Stop the LCD updater
+        lp.send_signal(signal.SIGINT)
+        # Stop Pandora
+        os.system("echo 'q' >> ~/.config/pianobar/ctl")
+        sleep(0.5)
+        # Start mpc
+        os.system("mpc play")
+        lp = subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", source])
+
   ### END OF LOOP ###
 #  sleep(10)
   kill_procs()
