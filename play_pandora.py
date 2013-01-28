@@ -11,16 +11,21 @@ import RPi.GPIO as GPIO
 # set up GPIO pins
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.IN) # test button
+#GPIO.setup(4, GPIO.OUT) # LCD backlight
+
 
 def main():
   # Add the SIGINT handler
-  signal.signal(signal.SIGINT, signal_handler_main)
+  signal.signal(signal.SIGINT, signal_handler_pandora)
 
   print "Starting Pandora..."
-  pp = subprocess.Popen(["pianobar"])
-  #os.system("pianobar")
+  subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", "pandora"])
+
+  subprocess.Popen(["pianobar"])
+
   # Start the LCD script
-  lp = subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", "pandora"])
+  #subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", "pandora"])
+  #os.system("/home/pi/piplayer/lcdctrl.py pandora")
 
   exitPlayer = False
   ### BEGIN THE LOOP ###
@@ -28,12 +33,16 @@ def main():
     if (GPIO.input(15) == False): # Button 1 pressed
       # Stop Pandora
       os.system("echo 'q' >> /root/.config/pianobar/ctl")
+      #lp.send_signal(signal.SIGINT)
+      os.system("sudo pkill -2 lcdctrl.py")
+      # Write empty song file ready for the next startup
+      os.system("echo '|Loading song data...||' > /home/pi/piplayer/pandoraout")
       exitPlayer = True
   ### END OF LOOP ###
 #  sleep(10)
-  kill_procs()
+  #kill_procs()
 
-def signal_handler_main(signal, frame):
+def signal_handler_pandora(signal, frame):
   # handle interrupt
   print("Closing other processes...")
   # Kill subprocesses

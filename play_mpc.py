@@ -14,11 +14,12 @@ GPIO.setup(15, GPIO.IN) # test button
 
 def main():
   # Add the SIGINT handler
-  signal.signal(signal.SIGINT, signal_handler_main)
+  signal.signal(signal.SIGINT, signal_handler_mpc)
 
   print "Starting mpc..."
   #pp = subprocess.Popen(["pianobar"])
   os.system("mpc play")
+
   # Start the LCD script
   lp = subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", "mpc"])
 
@@ -33,7 +34,7 @@ def main():
 #  sleep(10)
   kill_procs()
 
-def signal_handler_main(signal, frame):
+def signal_handler_mpc(signal, frame):
   # handle interrupt
   print("Closing other processes...")
   # Kill subprocesses

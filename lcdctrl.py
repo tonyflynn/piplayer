@@ -32,11 +32,11 @@ def main():
     if player == "mpc":
       songdata = get_list_mpc("mpc Stream")
     elif player == "pandora":
-      songdata = get_list_pandora("Pandora")
+      songdata = get_list_pandora("***** Pandora *****")
     else:
       sys.exit(0)
 
-    #Display scrolling data on the L:CD
+    #Display scrolling data on the LCD
     lcd_scroll(songdata[3], songdata[0], songdata[2], songdata[1])
 
 # List functions must return a 4-element list: 
@@ -70,11 +70,12 @@ def get_list_pandora(label):
 	artist = ""
 	song = ""
 	# Get song info from Pandora out file: pandoraout
-	f = open('pandoraout', 'r')
+	f = open('/home/pi/piplayer/pandoraout', 'r')
 	pandorainfo = f.read()
 	f.close
 	pandorainfo =  pandorainfo.split("|")
 	station = pandorainfo[0].strip()
+        station = station.replace("  ", " ")
 	song = pandorainfo[1].strip()
 	artist = pandorainfo[2].strip()
 	datalist = [station, song, artist, label]

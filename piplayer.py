@@ -25,6 +25,7 @@ def main():
   elif source == "mpc":
     lp = subprocess.Popen(["/home/pi/piplayer/play_mpc.py", source])
   exitPlayer = False
+
   ### BEGIN THE LOOP ###
   while exitPlayer == False:
     if (GPIO.input(15) == False): # Button 1 pressed
@@ -32,25 +33,11 @@ def main():
       if source == "mpc": 
       # Change source
         source = "pandora"
-        # Close the LCD updater
-        #lp.send_signal(signal.SIGINT)
-        #os.system("mpc stop")
-        #sleep(0.5)
-        # start pianobar
-        #os.system("sudo -u pi pianobar")
-        #lp = subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", source])
-        lp = subprocess.Popen(["/home/pi/piplayer/play_pandora.py", source])
+        mainp = subprocess.Popen(["/home/pi/piplayer/play_pandora.py", source])
       elif source == "pandora":
         # Change source
         source = "mpc"
-        # Stop the LCD updater
-        #lp.send_signal(signal.SIGINT)
-        # Stop Pandora
-        #os.system("echo 'q' >> ~/.config/pianobar/ctl")
-        #sleep(0.5)
-        # Start mpc
-        #os.system("mpc play")
-        lp = subprocess.Popen(["/home/pi/piplayer/play_mpc.py", source])
+        mainp = subprocess.Popen(["/home/pi/piplayer/play_mpc.py", source])
 
   ### END OF LOOP ###
 #  sleep(10)
