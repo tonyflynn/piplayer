@@ -9,8 +9,8 @@ from time import sleep
 import RPi.GPIO as GPIO
 
 # set up GPIO pins
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(15, GPIO.IN) # test button
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(15, GPIO.IN) # test button
 #GPIO.setup(4, GPIO.OUT) # LCD backlight
 
 
@@ -20,7 +20,7 @@ def main():
 
   print "Starting Pandora..."
   subprocess.Popen(["/home/pi/piplayer/lcdctrl.py", "pandora"])
-
+  sleep(1)
   subprocess.Popen(["pianobar"])
 
   # Start the LCD script
@@ -29,18 +29,20 @@ def main():
 
   exitPlayer = False
   ### BEGIN THE LOOP ###
-  while exitPlayer == False:
-    if (GPIO.input(15) == False): # Button 1 pressed
+  while True:# exitPlayer == False:
+    pass
+
+#    if (GPIO.input(15) == False): # Button 1 pressed
       # Stop Pandora
-      os.system("echo 'q' >> /root/.config/pianobar/ctl")
+#      os.system("echo 'q' >> /root/.config/pianobar/ctl")
       #lp.send_signal(signal.SIGINT)
-      os.system("sudo pkill -2 lcdctrl.py")
+#      os.system("sudo pkill -2 lcdctrl.py")
       # Write empty song file ready for the next startup
-      os.system("echo '|Loading song data...||' > /home/pi/piplayer/pandoraout")
-      exitPlayer = True
+#      os.system("echo '|Loading song data...||' > /home/pi/piplayer/pandoraout")
+#      exitPlayer = True
   ### END OF LOOP ###
 #  sleep(10)
-  #kill_procs()
+  kill_procs()
 
 def signal_handler_pandora(signal, frame):
   # handle interrupt

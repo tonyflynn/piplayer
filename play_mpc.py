@@ -1,5 +1,5 @@
 #!/usr/bin/python
-### Control prog for Pandora ###
+### Control prog for mpc ###
 
 import subprocess
 import os
@@ -25,14 +25,14 @@ def main():
 
   exitPlayer = False
   ### BEGIN THE LOOP ###
-  while exitPlayer == False:
-    if (GPIO.input(15) == False): # Button 1 pressed
+#  while exitPlayer == False:
+#    if (GPIO.input(15) == False): # Button 1 pressed
       # Stop mpc
-      os.system("mpc stop")
-      exitPlayer = True
+#      os.system("mpc stop")
+#      exitPlayer = True
   ### END OF LOOP ###
 #  sleep(10)
-  kill_procs()
+#  kill_procs()
 
 def signal_handler_mpc(signal, frame):
   # handle interrupt
